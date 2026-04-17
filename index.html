@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Carta Digital</title>
+  <style>
+    :root {
+      --accent: #e85d04;
+      --accent-light: #fff3eb;
+      --bg: #f7f5f2;
+      --card: #ffffff;
+      --text: #111827;
+      --text-2: #6b7280;
+      --border: #e5e7eb;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--card);
+      padding: 20px 16px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 8px rgba(0,0,0,.06);
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 640px;
+    }
+    .logo {
+      width: 52px; height: 52px;
+      border-radius: 12px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+    .header-info { flex: 1; min-width: 0; }
+    .restaurant-name {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .welcome-msg {
+      font-size: 0.78rem;
+      color: var(--text-2);
+      margin-top: 2px;
+      line-height: 1.3;
+    }
+
+    /* ── Category Tabs ── */
+    .tabs-wrap {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 85px;
+      z-index: 99;
+    }
+    .tabs {
+      display: flex;
+      gap: 6px;
+      padding: 10px 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      flex-shrink: 0;
+      padding: 7px 16px;
+      border-radius: 100px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: all .18s ease;
+      background: var(--bg);
+      color: var(--text-2);
+      white-space: nowrap;
+    }
+    .tab:hover { border-color: var(--accent); color: var(--accent); }
+    .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* ── Products Section ── */
+    .section {
+      padding: 20px 12px 8px;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 14px;
+      padding-left: 4px;
+    }
+    .products { display: flex; flex-direction: column; gap: 10px; }
+
+    /* ── Product Card ── */
+    .product-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      display: flex;
+      overflow: hidden;
+      transition: box-shadow .18s;
+    }
+    .product-card:active { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+    .product-img-wrap { flex-shrink: 0; width: 90px; height: 90px; overflow: hidden; }
+    .product-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .product-placeholder {
+      width: 90px; height: 90px;
+      background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      flex-shrink: 0;
+    }
+    .product-info {
+      padding: 10px 12px;
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .product-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+    .product-desc {
+      font-size: 0.75rem;
+      color: var(--text-2);
+      line-height: 1.4;
+      margin-bottom: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .product-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .product-price {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .allergen-pills { display: flex; gap: 3px; flex-wrap: wrap; }
+    .allergen-pill {
+      font-size: 0.68rem;
+      background: var(--accent-light);
+      color: #92400e;
+      padding: 2px 7px;
+      border-radius: 100px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* ── Allergen Legend ── */
+    .legend {
+      margin: 16px 12px 0;
+      max-width: 640px;
+      margin-left: auto;
+      margin-right: auto;
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 16px;
+    }
+    .legend-title {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text-2);
+      margin-bottom: 12px;
+    }
+    .legend-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: var(--text);
+    }
+    .legend-icon { font-size: 1.1rem; line-height: 1; }
+
+    /* ── Footer ── */
+    .footer {
+      text-align: center;
+      padding: 20px 16px 32px;
+      font-size: 0.72rem;
+      color: var(--text-2);
+      line-height: 1.6;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .footer strong { color: var(--accent); font-weight: 700; }
+
+    /* ── Loading / Error ── */
+    .state-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 16px;
+      padding: 32px;
+      text-align: center;
+    }
+    .spinner {
+      width: 44px; height: 44px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .75s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .state-icon { font-size: 3.5rem; }
+    .state-title { font-size: 1.25rem; font-weight: 800; color: var(--text); }
+    .state-sub { font-size: 0.875rem; color: var(--text-2); max-width: 280px; }
+    .empty-cat { padding: 40px 16px; text-align: center; color: var(--text-2); font-size: 0.875rem; }
+
+    /* ── Animations ── */
+    .fade-in { animation: fadeIn .3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const root = document.getElementById('root');
+
+    let menu = null;
+    let activeCategoryId = null;
+
+    // Detect if running locally (admin preview) or on GitHub Pages
+    const isLocal = ['localhost', '127.0.0.1'].includes(location.hostname);
+    const MENU_URL = isLocal ? '/api/carta/preview' : ('./menu.json?v=' + Date.now());
+
+    async function init() {
+      root.innerHTML = `<div class="state-screen"><div class="spinner"></div><p class="state-sub">Cargando carta…</p></div>`;
+      try {
+        const res = await fetch(MENU_URL);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        menu = await res.json();
+
+        // Apply accent color from menu
+        if (menu.meta?.accent_color) {
+          document.documentElement.style.setProperty('--accent', menu.meta.accent_color);
+          document.documentElement.style.setProperty('--accent-light', hexToLight(menu.meta.accent_color));
+          document.querySelector('meta[name="theme-color"]').content = menu.meta.accent_color;
+        }
+
+        document.title = (menu.meta?.restaurant_name || 'Carta') + ' · Carta Digital';
+
+        const visibleCats = (menu.categories || []).filter(c => c.products?.length > 0);
+        if (visibleCats.length === 0) throw new Error('empty');
+        activeCategoryId = visibleCats[0].id;
+        render();
+      } catch (e) {
+        const isEmpty = e.message === 'empty';
+        root.innerHTML = `
+          <div class="state-screen">
+            <div class="state-icon">${isEmpty ? '🍽️' : '📵'}</div>
+            <div class="state-title">${isEmpty ? 'Carta vacía' : 'Carta no disponible'}</div>
+            <p class="state-sub">${isEmpty ? 'De momento no hay productos disponibles.' : 'Por favor consulta con el personal del local.'}</p>
+          </div>`;
+      }
+    }
+
+    function render() {
+      const allCats = (menu.categories || []).filter(c => c.products?.length > 0);
+      const cat = allCats.find(c => c.id === activeCategoryId) || allCats[0];
+
+      const logoHtml = menu.meta?.logo
+        ? `<img src="${menu.meta.logo}" class="logo" alt="Logo" onerror="this.style.display='none'">`
+        : '';
+
+      const tabsHtml = allCats.map(c => `
+        <button class="tab${c.id === activeCategoryId ? ' active' : ''}" data-id="${c.id}">
+          ${esc(c.name)}
+        </button>`).join('');
+
+      const productsHtml = cat ? cat.products.map(p => {
+        const imgHtml = p.image
+          ? `<div class="product-img-wrap"><img src="${p.image}" class="product-img" alt="${esc(p.name)}" loading="lazy" onerror="this.closest('.product-img-wrap').outerHTML='<div class=\\'product-placeholder\\'>🍽️</div>'"></div>`
+          : `<div class="product-placeholder">🍽️</div>`;
+
+        const allergenHtml = (p.allergens || []).length
+          ? `<div class="allergen-pills">${p.allergens.map(a => `<span class="allergen-pill" title="${esc(a.name)}">${a.icon} ${esc(a.name)}</span>`).join('')}</div>`
+          : '';
+
+        const currency = esc(menu.meta?.currency || '€');
+        const price = typeof p.price === 'number' ? p.price.toFixed(2).replace('.', ',') : p.price;
+
+        return `
+          <div class="product-card fade-in">
+            ${imgHtml}
+            <div class="product-info">
+              <div>
+                <div class="product-name">${esc(p.name)}</div>
+                ${p.description ? `<div class="product-desc">${esc(p.description)}</div>` : ''}
+              </div>
+              <div class="product-footer">
+                <span class="product-price">${price} ${currency}</span>
+                ${allergenHtml}
+              </div>
+            </div>
+          </div>`;
+      }).join('') : '';
+
+      const allergenLegend = (menu.allergens || []).length ? `
+        <div class="legend">
+          <div class="legend-title">Información sobre alérgenos</div>
+          <div class="legend-grid">
+            ${menu.allergens.map(a => `
+              <div class="legend-item">
+                <span class="legend-icon">${a.icon}</span>
+                <span>${esc(a.name)}</span>
+              </div>`).join('')}
+          </div>
+        </div>` : '';
+
+      const updated = menu.meta?.updated_at
+        ? new Date(menu.meta.updated_at).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
+        : null;
+
+      root.innerHTML = `
+        <div class="header">
+          <div class="header-top">
+            ${logoHtml}
+            <div class="header-info">
+              <div class="restaurant-name">${esc(menu.meta?.restaurant_name || '')}</div>
+              ${menu.meta?.welcome_message ? `<div class="welcome-msg">${esc(menu.meta.welcome_message)}</div>` : ''}
+            </div>
+          </div>
+        </div>
+
+        <div class="tabs-wrap">
+          <div class="tabs" id="tabs">${tabsHtml}</div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">${esc(cat?.name || '')}</div>
+          <div class="products">
+            ${productsHtml || `<div class="empty-cat">No hay productos disponibles en esta categoría.</div>`}
+          </div>
+        </div>
+
+        ${allergenLegend}
+
+        <div class="footer">
+          ${updated ? `Carta actualizada el <strong>${updated}</strong><br>` : ''}
+          Consulta al personal para más información sobre alérgenos
+        </div>`;
+
+      // Bind tab clicks
+      document.querySelectorAll('.tab').forEach(btn => {
+        btn.addEventListener('click', () => {
+          activeCategoryId = parseInt(btn.dataset.id);
+          render();
+          // Scroll active tab into view
+          btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          // Scroll page to top
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+
+      // Scroll active tab into view on render
+      const activeTab = document.querySelector('.tab.active');
+      if (activeTab) activeTab.scrollIntoView({ block: 'nearest', inline: 'center' });
+    }
+
+    function esc(str) {
+      if (str == null) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function hexToLight(hex) {
+      // Returns a very light version of the accent color for background tints
+      try {
+        const r = parseInt(hex.slice(1,3),16);
+        const g = parseInt(hex.slice(3,5),16);
+        const b = parseInt(hex.slice(5,7),16);
+        return `rgba(${r},${g},${b},0.10)`;
+      } catch { return '#fff3eb'; }
+    }
+
+    init();
+  </script>
+</body>
+</html>
