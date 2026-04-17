@@ -281,7 +281,10 @@
 
     // Detect if running locally (admin preview) or on GitHub Pages
     const isLocal = ['localhost', '127.0.0.1'].includes(location.hostname);
-    const MENU_URL = isLocal ? '/api/carta/preview' : ('./menu.json?v=' + Date.now());
+    const cartaIdParam = new URLSearchParams(location.search).get('carta_id');
+    const MENU_URL = isLocal
+      ? `/api/carta/preview${cartaIdParam ? '?carta_id=' + cartaIdParam : ''}`
+      : ('./menu.json?v=' + Date.now());
 
     async function init() {
       root.innerHTML = `<div class="state-screen"><div class="spinner"></div><p class="state-sub">Cargando carta…</p></div>`;
